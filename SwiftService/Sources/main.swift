@@ -5,6 +5,19 @@ import OpenAPIVapor
 
 // Define a type that conforms to the generated protocol.
 struct GreetingServiceAPIImpl: APIProtocol {
+    func postGreet(_ input: Operations.PostGreet.Input) async throws -> Operations.PostGreet.Output {
+        var name = ""
+        var lastname = ""
+        
+        switch input.body { 
+        case .json(let person): 
+            name = person.name ?? ""
+            lastname = person.lastname ?? ""
+        }
+        
+        return .ok(.init(body: .json(.init(message: "Welcome, \(name) \(lastname)!", person: Components.Schemas.GreetRequest(name: name, lastname: lastname)))))
+    }
+    
     func getEmoji(_ input: Operations.GetEmoji.Input) async throws -> Operations.GetEmoji.Output {
         let emojis = "👋👍👏🙏🤙🤘"
         let emoji = String(emojis.randomElement()!)

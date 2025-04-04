@@ -12,7 +12,7 @@ import OpenAPIURLSession
 struct ContentView: View {
     
     let client: Client
-    @State private var emoji = "🫥"
+    @State private var text = "🫥"
     
     init() {
         self.client = Client(serverURL: try! Servers.Server1.url(), transport: URLSessionTransport())
@@ -20,9 +20,13 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            Text(emoji).font(.system(size: 100))
+            Text(text).font(.system(size: 100))
             Button("Get emojis!") {
-                Task { try? await updateEmoji() }
+                Task { try await updateEmoji() }
+            }
+            .padding()
+            Button("Get greet!") {
+                Task { try await updateGreet() }
             }
         }
         .padding()
@@ -30,16 +34,38 @@ struct ContentView: View {
     }
     
     func updateEmoji() async throws {
-        let response = try await client.getEmoji(Operations.GetEmoji.Input())
-        
-        switch response {
-        case let .ok(okResponse):
-            switch okResponse.body {
-            case .json(let content):
-                emoji = content
+        do { 
+            let response = try await client.getEmoji(Operations.GetEmoji.Input())
+            
+            switch response {
+            case let .ok(okResponse):
+                switch okResponse.body {
+                case .json(let content):
+                    text = content
+                }
+            case .undocumented(statusCode: let statusCode, _):
+                text = "🤖"
             }
-        case .undocumented(statusCode: let statusCode, _):
-            emoji = "🤖"
+        } catch { 
+            text = "🤖"
+        }
+    }
+    
+    func updateGreet() async throws {
+        do { 
+            let response = try await client.postGreet(.init(body: .json(.init(name: "Gustavo", lastname: "Santos"))))
+            
+            switch response { 
+            case let .ok(okResponse):
+                switch okResponse.body {
+                case .json(let content):
+                    text = content.message ?? "🤖"
+                }
+            case .undocumented(statusCode: let statusCode, _):
+                text = "🤖"
+            }
+        } catch { 
+            text = "🤖"
         }
     }
 }
