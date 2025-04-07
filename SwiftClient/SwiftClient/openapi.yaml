@@ -39,6 +39,7 @@ components:
         Emoji:
           type: string
         GreetRequest:
+          type: object
           properties:
             name:
               description: 'The name of the person.'
@@ -50,7 +51,11 @@ components:
               example: 'Santos'
               nullable: false
               type: string
+          required:
+            - name
+            - lastname
         GreetResponse:
+          type: object
           properties:
             message:
               description: 'The greet message formatted.'
@@ -59,3 +64,7 @@ components:
               type: string
             person:
               $ref: "#/components/schemas/GreetRequest"
+          required:
+            - message
+            - person
+

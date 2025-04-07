@@ -40,6 +40,7 @@
 			isa = PBXGroup;
 			children = (
 				B7D63EEF2D9C775D005BF182 /* SwiftClient */,
+				B7F4D8CD2DA443D400BED980 /* Frameworks */,
 				B7D63EEE2D9C775D005BF182 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -50,6 +51,13 @@
 				B7D63EED2D9C775D005BF182 /* SwiftClient.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		B7F4D8CD2DA443D400BED980 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

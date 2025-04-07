@@ -64,7 +64,7 @@ struct ContentView<C: APIProtocol>: View {
             case let .ok(okResponse):
                 switch okResponse.body {
                 case .json(let content):
-                    text = content.message ?? "❌"
+                    text = content.message
                 }
             case .undocumented(_, _):
                 text = "❌"

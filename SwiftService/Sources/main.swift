@@ -11,17 +11,17 @@ struct GreetingServiceAPIImpl: APIProtocol {
         
         switch input.body { 
         case .json(let person): 
-            name = person.name ?? ""
-            lastname = person.lastname ?? ""
+            name = person.name
+            lastname = person.lastname
         }
         
-        return .ok(.init(body: .json(.init(message: "Welcome, \(name) \(lastname)!", person: Components.Schemas.GreetRequest(name: name, lastname: lastname)))))
+        return .ok(.init(body: .json(.init(message: "Welcome, \(name) \(lastname)!", person: .init(name: name, lastname: lastname)))))
     }
     
     func getEmoji(_ input: Operations.GetEmoji.Input) async throws -> Operations.GetEmoji.Output {
         let emojis = "👋👍👏🙏🤙🤘"
         let emoji = String(emojis.randomElement()!)
-        return .ok(Operations.GetEmoji.Output.Ok(body: .json(emoji)))
+        return .ok(.init(body: .json(emoji)))
     }
 }
 
