@@ -1,0 +1,69 @@
+openapi: '3.1.0'
+info:
+  title: 'GreetingService'
+  version: '1.0.0'
+servers:
+  - url: 'http://localhost:8080/api'
+    description: 'Example service deployment.'
+paths:
+  /emoji:
+    get:
+      operationId: 'getEmoji'
+      responses:
+        '200':
+          description: 'A success response with an emoji.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Emoji'
+  /greet:
+    post:
+      operationId: 'postGreet'
+      summary: 'Greet endpoint'
+      description: 'Endpoint to send greetings.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GreetRequest'
+      responses:
+        '200':
+          description: 'Successful greeting.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GreetResponse'
+components:
+    schemas:
+        Emoji:
+          type: string
+        GreetRequest:
+          type: object
+          properties:
+            name:
+              description: 'The name of the person.'
+              example: 'Gustavo'
+              nullable: false
+              type: string
+            lastname:
+              description: 'The lastname of the person.'
+              example: 'Santos'
+              nullable: false
+              type: string
+          required:
+            - name
+            - lastname
+        GreetResponse:
+          type: object
+          properties:
+            message:
+              description: 'The greet message formatted.'
+              example: 'Hello, Gustavo Santos!'
+              nullable: false
+              type: string
+            person:
+              $ref: "#/components/schemas/GreetRequest"
+          required:
+            - message
+            - person
