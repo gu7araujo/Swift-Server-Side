@@ -9,18 +9,24 @@ import SwiftUI
 import OpenAPIRuntime
 import OpenAPIURLSession
 
-struct ContentView: View {
+struct ContentView<C: APIProtocol>: View {
     
-    let client: Client
+    let client: C
     @State private var text = "🫥"
     
-    init() {
+    init(client: C) { 
+        self.client = client
+    }
+    
+    init() where C == Client {
         self.client = Client(serverURL: try! Servers.Server1.url(), transport: URLSessionTransport())
     }
     
     var body: some View {
         VStack {
-            Text(text).font(.system(size: 100))
+            Text(text)
+                .font(.system(size: 100))
+                .padding()
             Button("Get emojis!") {
                 Task { try await updateEmoji() }
             }
@@ -29,7 +35,6 @@ struct ContentView: View {
                 Task { try await updateGreet() }
             }
         }
-        .padding()
         .buttonStyle(.borderedProminent)
     }
     
@@ -43,11 +48,11 @@ struct ContentView: View {
                 case .json(let content):
                     text = content
                 }
-            case .undocumented(statusCode: let statusCode, _):
-                text = "🤖"
+            case .undocumented(_, _):
+                text = "❌"
             }
         } catch { 
-            text = "🤖"
+            text = "❌"
         }
     }
     
@@ -59,17 +64,27 @@ struct ContentView: View {
             case let .ok(okResponse):
                 switch okResponse.body {
                 case .json(let content):
-                    text = content.message ?? "🤖"
+                    text = content.message ?? "❌"
                 }
-            case .undocumented(statusCode: let statusCode, _):
-                text = "🤖"
+            case .undocumented(_, _):
+                text = "❌"
             }
         } catch { 
-            text = "🤖"
+            text = "❌"
         }
     }
 }
 
+struct MockClient: APIProtocol {
+    func postGreet(_ input: Operations.PostGreet.Input) async throws -> Operations.PostGreet.Output {
+        .ok(.init(body: .json(.init(message: "Greeting Mocked!", person: .init(name: "mock", lastname: "mock again")))))
+    }
+    
+    func getEmoji(_ input: Operations.GetEmoji.Input) async throws -> Operations.GetEmoji.Output {
+        .ok(.init(body: .json("🤖")))
+    }    
+}
+
 #Preview {
-    ContentView()
+    ContentView(client: MockClient())
 }
